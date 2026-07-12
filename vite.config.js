@@ -8,8 +8,8 @@ export default defineConfig({
 		port: 5199,
 		strictPort: true,
 		proxy: {
-			'/api': 'http://localhost:5000',
-			'/uploads': 'http://localhost:5000',
+			'/api': 'https://vxperfumery.onrender.com',
+			'/uploads': 'https://vxperfumery.onrender.com',
 		},
 	},
 });
