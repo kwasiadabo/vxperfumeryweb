@@ -67,13 +67,13 @@ export default function AdminIssues() {
 
   return (
     <div className="w-full mx-auto max-w-5xl px-4 py-12">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-display text-4xl">Issues</h1>
         <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Status
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
+            className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
           >
             <option value="">All statuses</option>
             {STATUSES.map((s) => <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>)}

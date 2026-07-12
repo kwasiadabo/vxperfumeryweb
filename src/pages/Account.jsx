@@ -86,26 +86,28 @@ export default function Account() {
       <h2 className="font-display text-2xl mt-10">Purchase History</h2>
 
       {orders.length > 0 && (
-        <div className="mt-4 flex flex-wrap items-end gap-3">
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
           <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Search orders
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className={`${filterInput} w-48`}
+              className={`${filterInput} w-full sm:w-48`}
             />
           </label>
           <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Brand
-            <select value={brand} onChange={(e) => setBrand(e.target.value)} className={filterInput}>
+            <select value={brand} onChange={(e) => setBrand(e.target.value)} className={`${filterInput} w-full sm:w-auto`}>
               <option value="">All brands</option>
               {brands.map((b) => <option key={b} value={b}>{b}</option>)}
             </select>
           </label>
-          <label className="flex flex-col gap-1 text-xs font-medium text-black/60">From date
-            <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} className={filterInput} />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-medium text-black/60">To date
-            <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} className={filterInput} />
-          </label>
+          <div className="grid grid-cols-2 gap-3 sm:contents">
+            <label className="flex flex-col gap-1 text-xs font-medium text-black/60">From date
+              <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} className={`${filterInput} w-full sm:w-auto`} />
+            </label>
+            <label className="flex flex-col gap-1 text-xs font-medium text-black/60">To date
+              <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} className={`${filterInput} w-full sm:w-auto`} />
+            </label>
+          </div>
         </div>
       )}
 

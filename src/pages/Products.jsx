@@ -49,48 +49,50 @@ export default function Products() {
   return (
     <div className="w-full mx-auto max-w-6xl px-4 py-10">
       <h1 className="font-display text-4xl">The Collection</h1>
-      <div className="mt-6 flex flex-wrap items-end gap-3">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
         <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Search
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="px-4 py-2 rounded-full border border-black/15 bg-white text-sm w-64 focus:outline-none focus:border-gold"
+            className="w-full sm:w-64 px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold"
           />
         </label>
-        <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Brand
-          <select
-            value={brand}
-            onChange={(e) => setBrand(e.target.value)}
-            className="px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
-          >
-            <option value="">All brands</option>
-            {brands.map((b) => <option key={b.id} value={b.name}>{b.name}</option>)}
-          </select>
-        </label>
-        <label className="flex flex-col gap-1 text-xs font-medium text-black/60">For
-          <select
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            className="px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
-          >
-            <option value="">Everyone</option>
-            <option value="male">Him</option>
-            <option value="female">Her</option>
-            <option value="unisex">Unisex</option>
-          </select>
-        </label>
-        <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Scent family
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
-          >
-            <option value="">All scent families</option>
-            {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
-          </select>
-        </label>
+        <div className="grid grid-cols-2 gap-3 sm:contents">
+          <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Brand
+            <select
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
+            >
+              <option value="">All brands</option>
+              {brands.map((b) => <option key={b.id} value={b.name}>{b.name}</option>)}
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-medium text-black/60">For
+            <select
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
+            >
+              <option value="">Everyone</option>
+              <option value="male">Him</option>
+              <option value="female">Her</option>
+              <option value="unisex">Unisex</option>
+            </select>
+          </label>
+          <label className="col-span-2 sm:col-span-1 flex flex-col gap-1 text-xs font-medium text-black/60">Scent family
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
+            >
+              <option value="">All scent families</option>
+              {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
+            </select>
+          </label>
+        </div>
         {total > 0 && (
-          <span className="text-sm text-black/40 pb-2">
+          <span className="text-sm text-black/40 sm:pb-2">
             Showing {products.length} of {total} perfumes
           </span>
         )}

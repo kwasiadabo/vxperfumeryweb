@@ -242,31 +242,33 @@ export default function AdminProducts() {
       </form>
 
       {/* Search & filters */}
-      <div className="mt-10 flex flex-wrap items-end gap-3">
+      <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
         <label className={labelClass}>Search products
           <input
             value={filters.search}
             onChange={setFilter('search')}
-            className="px-4 py-2 rounded-full border border-black/15 bg-white text-sm w-56 focus:outline-none focus:border-gold"
+            className="w-full sm:w-56 px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold"
           />
         </label>
-        <label className={labelClass}>Brand
-          <select value={filters.brand} onChange={setFilter('brand')}
-            className="px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none">
-            <option value="">All brands</option>
-            {brands.map((b) => <option key={b.id} value={b.name}>{b.name}</option>)}
-          </select>
-        </label>
-        <label className={labelClass}>Gender
-          <select value={filters.gender} onChange={setFilter('gender')}
-            className="px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none">
-            <option value="">All genders</option>
-            <option value="male">Men</option>
-            <option value="female">Women</option>
-            <option value="unisex">Unisex</option>
-          </select>
-        </label>
-        <span className="text-sm text-black/40 pb-2">{total} products</span>
+        <div className="grid grid-cols-2 gap-3 sm:contents">
+          <label className={labelClass}>Brand
+            <select value={filters.brand} onChange={setFilter('brand')}
+              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none">
+              <option value="">All brands</option>
+              {brands.map((b) => <option key={b.id} value={b.name}>{b.name}</option>)}
+            </select>
+          </label>
+          <label className={labelClass}>Gender
+            <select value={filters.gender} onChange={setFilter('gender')}
+              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none">
+              <option value="">All genders</option>
+              <option value="male">Men</option>
+              <option value="female">Women</option>
+              <option value="unisex">Unisex</option>
+            </select>
+          </label>
+        </div>
+        <span className="text-sm text-black/40 sm:pb-2">{total} products</span>
       </div>
 
       {/* Product table */}

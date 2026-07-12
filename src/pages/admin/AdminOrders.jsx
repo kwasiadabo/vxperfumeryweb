@@ -83,29 +83,29 @@ export default function AdminOrders() {
 
   return (
     <div className="w-full mx-auto max-w-6xl px-4 py-12">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-display text-4xl">Orders</h1>
-        <div className="flex flex-wrap items-end gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
           <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Order date (clear for all)
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold"
+              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Destination
             <input
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
-              className="px-4 py-2 rounded-full border border-black/15 bg-white text-sm w-52 focus:outline-none focus:border-gold"
+              className="w-full sm:w-52 px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Rider
             <select
               value={riderFilter}
               onChange={(e) => setRiderFilter(e.target.value)}
-              className="px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
+              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
             >
               <option value="">All riders</option>
               <option value="unassigned">Unassigned</option>
@@ -116,7 +116,7 @@ export default function AdminOrders() {
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
+              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
             >
               <option value="">All statuses</option>
               {STATUSES.map((s) => <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>)}
