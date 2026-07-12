@@ -16,6 +16,7 @@ import Login from './pages/Login';
 import RiderPortal from './pages/RiderPortal';
 import RiderReport from './pages/RiderReport';
 import ReportIssue from './pages/ReportIssue';
+import NotFound from './pages/NotFound';
 import Dashboard from './pages/admin/Dashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
@@ -59,6 +60,7 @@ export default function App() {
             <Route path="reports/product-trend" element={<AdminProductSalesTrend />} />
             <Route path="reports/rider-deliveries" element={<AdminRiderDeliveriesReport />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
