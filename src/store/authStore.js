@@ -1,13 +1,22 @@
 import { create } from 'zustand';
 import { useCartStore } from './cartStore';
 
-const savedUser = JSON.parse(localStorage.getItem('vx_user') || 'null');
+function readSavedUser() {
+  try {
+    return JSON.parse(localStorage.getItem('vx_user') || 'null');
+  } catch {
+    localStorage.removeItem('vx_user');
+    return null;
+  }
+}
+
+const savedUser = readSavedUser();
 
 export const useAuthStore = create((set) => ({
   user: savedUser,
   login: (token, user) => {
     localStorage.setItem('vx_token', token);
-    localStorage.setItem('vx_user', JSON.stringify(user));
+    localStorage.setItem('vx_user', JSON.stringify(user ?? null));
     set({ user });
   },
   logout: () => {

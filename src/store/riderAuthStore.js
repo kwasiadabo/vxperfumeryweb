@@ -1,7 +1,16 @@
 import { create } from 'zustand';
 
 // Rider session, separate from the customer/admin session in authStore
-const savedRider = JSON.parse(localStorage.getItem('vx_rider') || 'null');
+function readSavedRider() {
+  try {
+    return JSON.parse(localStorage.getItem('vx_rider') || 'null');
+  } catch {
+    localStorage.removeItem('vx_rider');
+    return null;
+  }
+}
+
+const savedRider = readSavedRider();
 const savedMustSetPassword = localStorage.getItem('vx_rider_must_set_password') === 'true';
 
 export const useRiderAuthStore = create((set) => ({
@@ -9,7 +18,7 @@ export const useRiderAuthStore = create((set) => ({
   mustSetPassword: savedMustSetPassword,
   login: (token, rider, mustSetPassword) => {
     localStorage.setItem('vx_rider_token', token);
-    localStorage.setItem('vx_rider', JSON.stringify(rider));
+    localStorage.setItem('vx_rider', JSON.stringify(rider ?? null));
     localStorage.setItem('vx_rider_must_set_password', String(Boolean(mustSetPassword)));
     set({ rider, mustSetPassword: Boolean(mustSetPassword) });
   },
