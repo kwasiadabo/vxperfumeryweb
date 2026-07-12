@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { money } from '../lib/format';
+import { resolveAssetUrl } from '../lib/api';
 
 export default function Cart() {
   const { items, updateQuantity, removeItem } = useCartStore();
@@ -35,7 +36,7 @@ export default function Cart() {
           <div key={product.id} className="flex items-center gap-4 bg-white border border-black/5 rounded-lg p-4">
             <div className="w-16 h-16 bg-black/5 rounded flex items-center justify-center shrink-0 overflow-hidden">
               {product.imageUrl
-                ? <img src={product.imageUrl} alt="" className="w-full h-full object-cover" />
+                ? <img src={resolveAssetUrl(product.imageUrl)} alt="" className="w-full h-full object-cover" />
                 : <span className="font-display text-black/20">VX</span>}
             </div>
             <div className="flex-1 min-w-0">

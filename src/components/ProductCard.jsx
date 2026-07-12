@@ -5,6 +5,7 @@ import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { useToastStore } from '../store/toastStore';
 import { money } from '../lib/format';
+import { resolveAssetUrl } from '../lib/api';
 
 export default function ProductCard({ product }) {
   const addItem = useCartStore((s) => s.addItem);
@@ -31,7 +32,7 @@ export default function ProductCard({ product }) {
       <Link to={`/products/${product.id}`}>
         <div className="aspect-square bg-gradient-to-b from-black/[0.03] to-black/[0.06] flex items-center justify-center overflow-hidden">
           {product.imageUrl ? (
-            <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src={resolveAssetUrl(product.imageUrl)} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           ) : (
             <span className="font-display text-4xl text-black/15">VX</span>
           )}

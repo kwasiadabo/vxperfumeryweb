@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Heart } from 'lucide-react';
-import api from '../lib/api';
+import api, { resolveAssetUrl } from '../lib/api';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { useToastStore } from '../store/toastStore';
@@ -47,7 +47,7 @@ export default function ProductDetail() {
     <div className="w-full mx-auto max-w-5xl px-4 py-12 grid md:grid-cols-2 gap-12">
       <div className="aspect-square bg-white border border-black/5 rounded-lg flex items-center justify-center overflow-hidden">
         {product.imageUrl ? (
-          <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+          <img src={resolveAssetUrl(product.imageUrl)} alt={product.name} className="w-full h-full object-cover" />
         ) : (
           <span className="font-display text-6xl text-black/10">VX</span>
         )}

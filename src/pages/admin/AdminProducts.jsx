@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../lib/api';
+import api, { resolveAssetUrl } from '../../lib/api';
 import { useAuthStore } from '../../store/authStore';
 import { useToastStore } from '../../store/toastStore';
 import { money } from '../../lib/format';
@@ -288,7 +288,7 @@ export default function AdminProducts() {
                 <td className="px-3 py-2.5">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-black/5 rounded overflow-hidden shrink-0">
-                      {p.imageUrl && <img src={p.imageUrl} alt="" className="w-full h-full object-cover" />}
+                      {p.imageUrl && <img src={resolveAssetUrl(p.imageUrl)} alt="" className="w-full h-full object-cover" />}
                     </div>
                     <div className="min-w-0">
                       <p className="truncate">{p.name}</p>
