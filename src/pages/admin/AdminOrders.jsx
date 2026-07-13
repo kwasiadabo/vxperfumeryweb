@@ -145,8 +145,12 @@ export default function AdminOrders() {
                 <tr key={order.id} className="border-t border-black/5 align-top">
                   <td className="px-3 py-3">
                     <p className="font-mono text-xs">{order.orderNumber}</p>
-                    <p className="text-xs mt-1">{order.User?.firstName} {order.User?.lastName}</p>
-                    <p className="text-xs text-black/40">{order.User?.phoneNumber || order.User?.email}</p>
+                    <p className="text-xs mt-1">
+                      {order.User ? `${order.User.firstName} ${order.User.lastName}` : order.guestName}
+                    </p>
+                    <p className="text-xs text-black/40">
+                      {order.User?.phoneNumber || order.User?.email || order.guestPhone || order.guestEmail}
+                    </p>
                     <p className="text-xs text-black/40 mt-0.5">{formatDate(order.createdAt)}</p>
                   </td>
                   <td className="px-3 py-3">

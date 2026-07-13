@@ -118,7 +118,7 @@ export default function AdminOrdersReport() {
                         <p className="font-mono text-xs">{o.orderNumber}</p>
                         <p className="text-xs text-black/40 mt-0.5">{formatDate(o.createdAt)}</p>
                       </td>
-                      <td className="px-3 py-3 text-xs">{o.User?.firstName} {o.User?.lastName}</td>
+                      <td className="px-3 py-3 text-xs">{o.User ? `${o.User.firstName} ${o.User.lastName}` : o.guestName}</td>
                       <td className="px-3 py-3">
                         <span className={`text-xs px-2 py-1 rounded-full capitalize ${statusColors[o.status] || ''}`}>
                           {o.status.replace(/_/g, ' ')}

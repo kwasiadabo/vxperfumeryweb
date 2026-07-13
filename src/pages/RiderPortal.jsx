@@ -87,7 +87,7 @@ export default function RiderPortal() {
 	const confirmDelivery = async (order) => {
 		const ok = await confirmDialog({
 			title: 'Confirm Delivery',
-			message: `Confirm that order ${order.orderNumber} has been delivered to ${order.User?.firstName}?`,
+			message: `Confirm that order ${order.orderNumber} has been delivered to ${order.User?.firstName || order.guestName}?`,
 			confirmLabel: 'Confirm Delivery',
 		});
 		if (!ok) return;
@@ -267,16 +267,16 @@ export default function RiderPortal() {
 								{order.shippingAddress}
 							</p>
 							<p className="mt-1 text-black/60">
-								{order.User?.firstName} {order.User?.lastName}
-								{order.User?.phoneNumber && (
+								{order.User ? `${order.User.firstName} ${order.User.lastName}` : order.guestName}
+								{(order.User?.phoneNumber || order.guestPhone) && (
 									<>
 										{' '}
 										·{' '}
 										<a
-											href={`tel:${order.User.phoneNumber}`}
+											href={`tel:${order.User?.phoneNumber || order.guestPhone}`}
 											className="text-gold hover:underline"
 										>
-											{order.User.phoneNumber}
+											{order.User?.phoneNumber || order.guestPhone}
 										</a>
 									</>
 								)}

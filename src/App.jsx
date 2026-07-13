@@ -11,6 +11,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import CheckoutComplete from './pages/CheckoutComplete';
 import Account from './pages/Account';
+import TrackOrder from './pages/TrackOrder';
 import Favorites from './pages/Favorites';
 import Login from './pages/Login';
 import RiderPortal from './pages/RiderPortal';
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/checkout/complete" element={<CheckoutComplete />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/track-order" element={<TrackOrder />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/login" element={<Login />} />
           <Route path="/rider" element={<RiderPortal />} />

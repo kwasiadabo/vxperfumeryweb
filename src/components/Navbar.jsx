@@ -47,6 +47,9 @@ export default function Navbar() {
           {user && (
             <NavLink to="/report-issue" className={navLinkClass}>Report Issue</NavLink>
           )}
+          {!user && !rider && (
+            <NavLink to="/track-order" className={navLinkClass}>Track Order</NavLink>
+          )}
           {user ? (
             <NavLink to="/account" className={navLinkClass}>{user.firstName}</NavLink>
           ) : rider ? (
@@ -101,6 +104,9 @@ export default function Navbar() {
           )}
           {user && (
             <NavLink to="/report-issue" onClick={closeMenu} className={mobileNavLinkClass}>Report Issue</NavLink>
+          )}
+          {!user && !rider && (
+            <NavLink to="/track-order" onClick={closeMenu} className={mobileNavLinkClass}>Track Order</NavLink>
           )}
           {user ? (
             <NavLink to="/account" onClick={closeMenu} className={mobileNavLinkClass}>{user.firstName}</NavLink>

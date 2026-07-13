@@ -1,17 +1,51 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Receipt, Bike, Flag, Settings, FileBarChart2,
   Wallet, PackageSearch, IdCard, ChevronRight,
 } from 'lucide-react';
+import api from '../lib/api';
 import { useAuthStore } from '../store/authStore';
+import { useToastStore } from '../store/toastStore';
+
+const BADGE_POLL_MS = 20000;
 
 const MENU = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/admin/orders', label: 'Orders', icon: Receipt },
+  { to: '/admin/orders', label: 'Orders', icon: Receipt, countKey: 'orders' },
   { to: '/admin/delivery', label: 'Delivery', icon: Bike },
-  { to: '/admin/issues', label: 'Issues', icon: Flag },
+  { to: '/admin/issues', label: 'Issues', icon: Flag, countKey: 'issues' },
 ];
+
+// Polls a cheap count endpoint (not the full dashboard) and reports increases
+// since the last check — used to badge and alert on new orders/issues.
+function usePolledCount(url, enabled, onIncrease) {
+  const [count, setCount] = useState(0);
+  const previousRef = useRef(null); // null = baseline not yet fetched
+  const onIncreaseRef = useRef(onIncrease);
+  onIncreaseRef.current = onIncrease;
+
+  useEffect(() => {
+    if (!enabled) return;
+    let cancelled = false;
+    const poll = () => {
+      api.get(url).then((res) => {
+        if (cancelled) return;
+        const next = res.data.count;
+        setCount(next);
+        if (previousRef.current !== null && next > previousRef.current) {
+          onIncreaseRef.current(next - previousRef.current);
+        }
+        previousRef.current = next;
+      }).catch(() => {});
+    };
+    poll();
+    const interval = setInterval(poll, BADGE_POLL_MS);
+    return () => { cancelled = true; clearInterval(interval); };
+  }, [url, enabled]);
+
+  return count;
+}
 
 const SETUP_MENU = [
   { to: '/admin/delivery-fees', label: 'Delivery Fees', icon: Wallet },
@@ -38,8 +72,11 @@ const linkClass = ({ isActive }) =>
 
 export default function AdminLayout() {
   const user = useAuthStore((s) => s.user);
+  const toast = useToastStore((s) => s.show);
   const navigate = useNavigate();
   const location = useLocation();
+  const titleFlashRef = useRef(null);
+  const originalTitleRef = useRef(document.title);
 
   const activeAccordions = ACCORDIONS.filter((acc) =>
     acc.items.some((item) => location.pathname.startsWith(item.to))
@@ -55,6 +92,45 @@ export default function AdminLayout() {
   useEffect(() => {
     if (!user?.isAdmin) navigate('/');
   }, [user, navigate]);
+
+  const stopTitleFlash = () => {
+    if (!titleFlashRef.current) return;
+    clearInterval(titleFlashRef.current);
+    titleFlashRef.current = null;
+    document.title = originalTitleRef.current;
+  };
+
+  // New orders arriving while the admin has this tab in the background are easy
+  // to miss — flash the tab title until they come back to check.
+  const startTitleFlash = () => {
+    if (titleFlashRef.current) return;
+    let showAlert = true;
+    titleFlashRef.current = setInterval(() => {
+      document.title = showAlert ? '🔔 New order — VX Admin' : originalTitleRef.current;
+      showAlert = !showAlert;
+    }, 1000);
+  };
+
+  useEffect(() => {
+    const onVisibilityChange = () => { if (!document.hidden) stopTitleFlash(); };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      stopTitleFlash();
+    };
+  }, []);
+
+  const isAdmin = Boolean(user?.isAdmin);
+  const counts = {
+    orders: usePolledCount('/admin/orders/pending-count', isAdmin, (diff) => {
+      toast(diff === 1 ? 'New order received!' : `${diff} new orders received!`, 'info');
+      if (document.hidden) startTitleFlash();
+    }),
+    issues: usePolledCount('/admin/issues/open-count', isAdmin, (diff) => {
+      toast(diff === 1 ? 'New issue reported!' : `${diff} new issues reported!`, 'info');
+      if (document.hidden) startTitleFlash();
+    }),
+  };
 
   // keep an accordion open while browsing its pages
   useEffect(() => {
@@ -74,12 +150,20 @@ export default function AdminLayout() {
             Admin Portal
           </p>
           <nav className="flex md:flex-col gap-1 overflow-x-auto">
-            {MENU.map((item) => (
-              <NavLink key={item.to} to={item.to} end={item.end} className={linkClass}>
-                <item.icon size={17} strokeWidth={1.75} className="shrink-0" />
-                <span className="whitespace-nowrap">{item.label}</span>
-              </NavLink>
-            ))}
+            {MENU.map((item) => {
+              const badgeCount = item.countKey ? counts[item.countKey] : 0;
+              return (
+                <NavLink key={item.to} to={item.to} end={item.end} className={linkClass}>
+                  <item.icon size={17} strokeWidth={1.75} className="shrink-0" />
+                  <span className="whitespace-nowrap flex-1">{item.label}</span>
+                  {badgeCount > 0 && (
+                    <span className="min-w-5 h-5 px-1.5 rounded-full bg-gold text-ink text-[11px] font-semibold flex items-center justify-center">
+                      {badgeCount > 99 ? '99+' : badgeCount}
+                    </span>
+                  )}
+                </NavLink>
+              );
+            })}
 
             {/* Accordion groups (Setup, Reports, ...) */}
             {ACCORDIONS.map((acc) => {

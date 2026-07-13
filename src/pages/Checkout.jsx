@@ -10,6 +10,8 @@ export default function Checkout() {
   const { items, clear } = useCartStore();
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
+  const [checkingOutAsGuest, setCheckingOutAsGuest] = useState(false);
+  const [guest, setGuest] = useState({ name: '', email: '', phone: '' });
   const [delivery, setDelivery] = useState({ address: '', street: '', area: '', region: '' });
   const [cityChoice, setCityChoice] = useState(''); // a configured city, or 'Other'
   const [otherCity, setOtherCity] = useState(''); // free text when 'Other'
@@ -42,13 +44,19 @@ export default function Checkout() {
   const subtotal = items.reduce((sum, i) => sum + Number(i.product.price) * i.quantity, 0);
   const total = subtotal + shippingCost;
 
-  if (!user) {
+  if (!user && !checkingOutAsGuest) {
     return (
       <div className="text-center py-24">
-        <h1 className="font-display text-3xl">Sign in to checkout</h1>
-        <button onClick={() => navigate('/login')} className="mt-6 text-gold hover:underline">
-          Go to sign in →
-        </button>
+        <h1 className="font-display text-3xl">Checkout</h1>
+        <p className="mt-3 text-black/50 text-sm">Sign in for order history and faster checkout next time, or continue without an account.</p>
+        <div className="mt-8 flex flex-col items-center gap-3">
+          <button onClick={() => navigate('/login')} className="px-8 py-3 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors">
+            Sign in
+          </button>
+          <button onClick={() => setCheckingOutAsGuest(true)} className="text-sm text-black/60 hover:text-gold underline underline-offset-2">
+            Continue as guest
+          </button>
+        </div>
       </div>
     );
   }
@@ -58,12 +66,27 @@ export default function Checkout() {
     setSubmitting(true);
     setError('');
     try {
-      // Sync local cart to the server cart, then create the order
-      await api.delete('/cart').catch(() => {});
-      for (const item of items) {
-        await api.post('/cart/items', { productId: item.product.id, quantity: item.quantity });
+      let data;
+      if (user) {
+        // Sync local cart to the server cart, then create the order
+        await api.delete('/cart').catch(() => {});
+        for (const item of items) {
+          await api.post('/cart/items', { productId: item.product.id, quantity: item.quantity });
+        }
+        ({ data } = await api.post('/orders', { ...delivery, city, shippingCost }));
+      } else {
+        // Guest checkout — no server-side cart to build from, so the local
+        // cart items are sent directly alongside the guest's contact info.
+        ({ data } = await api.post('/orders', {
+          ...delivery,
+          city,
+          shippingCost,
+          guestName: guest.name,
+          guestEmail: guest.email,
+          guestPhone: guest.phone,
+          items: items.map((i) => ({ productId: i.product.id, quantity: i.quantity })),
+        }));
       }
-      const { data } = await api.post('/orders', { ...delivery, city, shippingCost });
       clear();
       window.location.href = data.paymentUrl; // hand off to Paystack
     } catch (err) {
@@ -79,6 +102,42 @@ export default function Checkout() {
     <div className="w-full mx-auto max-w-lg px-4 py-12">
       <h1 className="font-display text-4xl">Checkout</h1>
       <form onSubmit={placeOrder} className="mt-8 space-y-4">
+        {!user && (
+          <div className="bg-white border border-black/5 rounded-lg p-4 space-y-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-gold">Contact Details</p>
+            <label className={labelClass}>Full name *
+              <input
+                required
+                value={guest.name}
+                onChange={(e) => setGuest({ ...guest, name: e.target.value })}
+                className={inputClass}
+              />
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <label className={labelClass}>Email *
+                <input
+                  required
+                  type="email"
+                  value={guest.email}
+                  onChange={(e) => setGuest({ ...guest, email: e.target.value })}
+                  className={inputClass}
+                />
+              </label>
+              <label className={labelClass}>Phone *
+                <input
+                  required
+                  type="tel"
+                  value={guest.phone}
+                  onChange={(e) => setGuest({ ...guest, phone: e.target.value })}
+                  className={inputClass}
+                />
+              </label>
+            </div>
+            <p className="text-xs text-black/40">
+              We'll text order updates to this number — keep your order number and these details to track it later.
+            </p>
+          </div>
+        )}
         <div className="bg-white border border-black/5 rounded-lg p-4 space-y-3">
           <p className="text-xs uppercase tracking-[0.2em] text-gold">Delivery Details</p>
           <div className="grid grid-cols-2 gap-3">

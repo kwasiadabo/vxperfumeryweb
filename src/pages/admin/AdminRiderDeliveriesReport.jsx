@@ -124,7 +124,7 @@ export default function AdminRiderDeliveriesReport() {
                           <tr key={o.id} className="border-t border-black/5">
                             <td className="px-3 py-2 text-xs text-black/40">{i + 1}</td>
                             <td className="px-3 py-2 font-mono text-xs">{o.orderNumber}</td>
-                            <td className="px-3 py-2 text-xs">{o.User?.firstName} {o.User?.lastName}</td>
+                            <td className="px-3 py-2 text-xs">{o.User ? `${o.User.firstName} ${o.User.lastName}` : o.guestName}</td>
                             <td className="px-3 py-2 text-xs">{formatDate(o.deliveredAt)}</td>
                             <td className="px-3 py-2 text-right text-xs">{money(o.subtotal)}</td>
                             <td className="px-3 py-2 text-right text-xs">{money(o.shippingCost)}</td>

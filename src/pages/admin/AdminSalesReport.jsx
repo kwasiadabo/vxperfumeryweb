@@ -121,7 +121,7 @@ export default function AdminSalesReport() {
                 </tr>
               </thead>
               <tbody>
-                {report.daily.map((d, i) => (
+                {report.daily.filter((d) => d.orders > 0).map((d, i) => (
                   <tr key={d.day} className="border-t border-black/5">
                     <td className="px-3 py-3 text-xs text-black/40">{i + 1}</td>
                     <td className="px-3 py-3 text-xs">{formatDate(d.day)}</td>
@@ -131,6 +131,9 @@ export default function AdminSalesReport() {
                 ))}
               </tbody>
             </table>
+            {report.totals.totalOrders === 0 && (
+              <p className="px-3 py-6 text-center text-sm text-black/40">No sales in this period.</p>
+            )}
           </div>
         </>
       )}

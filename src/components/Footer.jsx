@@ -46,6 +46,7 @@ export default function Footer() {
             <li><Link to="/favorites" className="hover:text-gold transition-colors">Favourites</Link></li>
             {user && <li><Link to="/cart" className="hover:text-gold transition-colors">Cart</Link></li>}
             <li><Link to="/account" className="hover:text-gold transition-colors">My Account</Link></li>
+            <li><Link to="/track-order" className="hover:text-gold transition-colors">Track Order</Link></li>
             <li><Link to="/rider" className="hover:text-gold transition-colors">Rider Portal</Link></li>
           </ul>
         </div>
