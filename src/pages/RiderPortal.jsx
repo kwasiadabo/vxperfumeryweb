@@ -17,6 +17,7 @@ export default function RiderPortal() {
 	const [form, setForm] = useState({ phone: '', credential: '' });
 	const [pwForm, setPwForm] = useState({ password: '', confirm: '' });
 	const [orders, setOrders] = useState([]);
+	const [search, setSearch] = useState('');
 	const [error, setError] = useState('');
 	const [pwError, setPwError] = useState('');
 	const [loading, setLoading] = useState(false);
@@ -106,6 +107,17 @@ export default function RiderPortal() {
 	const inputClass =
 		'w-full px-4 py-3 rounded-lg border border-black/15 bg-white text-sm focus:outline-none focus:border-gold';
 	const labelClass = 'flex flex-col gap-1 text-xs font-medium text-black/60';
+
+	const searchTerm = search.trim().toLowerCase();
+	const filteredOrders = searchTerm
+		? orders.filter((order) => {
+				const customer = order.User ? `${order.User.firstName} ${order.User.lastName}` : order.guestName;
+				const phone = order.User?.phoneNumber || order.guestPhone;
+				return [order.orderNumber, customer, phone, order.shippingAddress]
+					.filter(Boolean)
+					.some((field) => field.toLowerCase().includes(searchTerm));
+			})
+		: orders;
 
 	if (!rider) {
 		return (
@@ -238,10 +250,73 @@ export default function RiderPortal() {
 			{error && <p className="mt-3 text-red-600 text-sm">{error}</p>}
 
 			{orders.length > 0 && (
-				<div className="mt-4 bg-white border border-black/5 rounded-lg overflow-x-auto">
+				<input
+					value={search}
+					onChange={(e) => setSearch(e.target.value)}
+					placeholder="Search by order number, customer or address…"
+					className="mt-4 w-full px-4 py-2.5 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold"
+				/>
+			)}
+
+			{orders.length > 0 && !filteredOrders.length && (
+				<p className="mt-4 text-sm text-black/40">No deliveries match "{search}".</p>
+			)}
+
+			{filteredOrders.length > 0 && (
+				<div className="mt-4 space-y-3 sm:hidden">
+					{filteredOrders.map((order, i) => (
+						<div key={order.id} className="bg-white border border-black/5 rounded-lg p-4">
+							<div className="flex items-center justify-between gap-2">
+								<p className="font-mono text-xs">{i + 1}. {order.orderNumber}</p>
+								<span className="text-xs px-2 py-0.5 rounded-full capitalize bg-orange-100 text-orange-800">
+									{order.status.replace(/_/g, ' ')}
+								</span>
+							</div>
+							<p className="mt-2 text-xs text-black/70">
+								{order.OrderItems?.map((item) => `${item.quantity}× ${item.Product?.name}`).join(', ')}
+							</p>
+							<p className="mt-2 text-xs text-gold flex items-start gap-1">
+								<MapPin size={12} strokeWidth={2} className="shrink-0 mt-0.5" />
+								{order.shippingAddress}
+							</p>
+							<p className="mt-1 text-xs text-black/60">
+								{order.User ? `${order.User.firstName} ${order.User.lastName}` : order.guestName}
+								{(order.User?.phoneNumber || order.guestPhone) && (
+									<>
+										{' '}·{' '}
+										<a
+											href={`tel:${order.User?.phoneNumber || order.guestPhone}`}
+											className="text-gold hover:underline"
+										>
+											{order.User?.phoneNumber || order.guestPhone}
+										</a>
+									</>
+								)}
+							</p>
+							<button
+								onClick={() => confirmDelivery(order)}
+								disabled={confirming === order.id}
+								className="mt-3 w-full py-2.5 rounded-full bg-green-700 text-white text-xs hover:bg-green-800 transition-colors disabled:opacity-40 flex items-center justify-center gap-1.5"
+							>
+								{confirming === order.id ? (
+									'Confirming…'
+								) : (
+									<>
+										Confirm Delivery <Check size={14} strokeWidth={2.5} />
+									</>
+								)}
+							</button>
+						</div>
+					))}
+				</div>
+			)}
+
+			{filteredOrders.length > 0 && (
+				<div className="hidden sm:block mt-4 bg-white border border-black/5 rounded-lg overflow-x-auto">
 					<table className="w-full text-sm">
 						<thead>
 							<tr className="text-left text-black/40 border-b border-black/5">
+								<th className="px-4 py-3 font-medium">#</th>
 								<th className="px-4 py-3 font-medium">Order</th>
 								<th className="px-4 py-3 font-medium">Items</th>
 								<th className="px-4 py-3 font-medium">Deliver To</th>
@@ -250,8 +325,9 @@ export default function RiderPortal() {
 							</tr>
 						</thead>
 						<tbody>
-							{orders.map((order) => (
+							{filteredOrders.map((order, i) => (
 								<tr key={order.id} className="border-t border-black/5 align-top">
+									<td className="px-4 py-3 text-xs text-black/40">{i + 1}</td>
 									<td className="px-4 py-3">
 										<p className="font-mono text-xs">{order.orderNumber}</p>
 										<p className="text-xs text-black/40 mt-0.5">{formatDate(order.createdAt)}</p>
