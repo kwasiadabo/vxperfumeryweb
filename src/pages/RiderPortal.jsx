@@ -237,67 +237,73 @@ export default function RiderPortal() {
 			</h2>
 			{error && <p className="mt-3 text-red-600 text-sm">{error}</p>}
 
-			<div className="mt-4 space-y-4">
-				{orders.map((order) => (
-					<div
-						key={order.id}
-						className="bg-white border border-black/5 rounded-lg p-5"
-					>
-						<div className="flex flex-wrap items-start justify-between gap-3">
-							<div>
-								<p className="font-mono text-sm">{order.orderNumber}</p>
-								<p className="text-xs text-black/40 mt-0.5">
-									Ordered {formatDate(order.createdAt)}
-								</p>
-							</div>
-							<span className="text-xs px-2 py-1 rounded-full capitalize bg-orange-100 text-orange-800">
-								{order.status.replace(/_/g, ' ')}
-							</span>
-						</div>
-						<ul className="mt-3 text-sm text-black/70">
-							{order.OrderItems?.map((item) => (
-								<li key={item.id}>
-									{item.quantity}× {item.Product?.name}
-								</li>
-							))}
-						</ul>
-						<div className="mt-3 text-sm">
-							<p className="text-gold flex items-center gap-1.5">
-								<MapPin size={14} strokeWidth={2} className="shrink-0" />{' '}
-								{order.shippingAddress}
-							</p>
-							<p className="mt-1 text-black/60">
-								{order.User ? `${order.User.firstName} ${order.User.lastName}` : order.guestName}
-								{(order.User?.phoneNumber || order.guestPhone) && (
-									<>
-										{' '}
-										·{' '}
-										<a
-											href={`tel:${order.User?.phoneNumber || order.guestPhone}`}
-											className="text-gold hover:underline"
+			{orders.length > 0 && (
+				<div className="mt-4 bg-white border border-black/5 rounded-lg overflow-x-auto">
+					<table className="w-full text-sm">
+						<thead>
+							<tr className="text-left text-black/40 border-b border-black/5">
+								<th className="px-4 py-3 font-medium">Order</th>
+								<th className="px-4 py-3 font-medium">Items</th>
+								<th className="px-4 py-3 font-medium">Deliver To</th>
+								<th className="px-4 py-3 font-medium">Customer</th>
+								<th className="px-4 py-3 font-medium"></th>
+							</tr>
+						</thead>
+						<tbody>
+							{orders.map((order) => (
+								<tr key={order.id} className="border-t border-black/5 align-top">
+									<td className="px-4 py-3">
+										<p className="font-mono text-xs">{order.orderNumber}</p>
+										<p className="text-xs text-black/40 mt-0.5">{formatDate(order.createdAt)}</p>
+										<span className="mt-1 inline-block text-xs px-2 py-0.5 rounded-full capitalize bg-orange-100 text-orange-800">
+											{order.status.replace(/_/g, ' ')}
+										</span>
+									</td>
+									<td className="px-4 py-3">
+										<ul className="text-xs text-black/70 space-y-0.5">
+											{order.OrderItems?.map((item) => (
+												<li key={item.id}>{item.quantity}× {item.Product?.name}</li>
+											))}
+										</ul>
+									</td>
+									<td className="px-4 py-3">
+										<span className="text-gold text-xs flex items-start gap-1">
+											<MapPin size={12} strokeWidth={2} className="shrink-0 mt-0.5" />
+											{order.shippingAddress}
+										</span>
+									</td>
+									<td className="px-4 py-3 text-xs text-black/60 whitespace-nowrap">
+										<p>{order.User ? `${order.User.firstName} ${order.User.lastName}` : order.guestName}</p>
+										{(order.User?.phoneNumber || order.guestPhone) && (
+											<a
+												href={`tel:${order.User?.phoneNumber || order.guestPhone}`}
+												className="text-gold hover:underline"
+											>
+												{order.User?.phoneNumber || order.guestPhone}
+											</a>
+										)}
+									</td>
+									<td className="px-4 py-3">
+										<button
+											onClick={() => confirmDelivery(order)}
+											disabled={confirming === order.id}
+											className="whitespace-nowrap px-4 py-2 rounded-full bg-green-700 text-white text-xs hover:bg-green-800 transition-colors disabled:opacity-40 flex items-center justify-center gap-1.5"
 										>
-											{order.User?.phoneNumber || order.guestPhone}
-										</a>
-									</>
-								)}
-							</p>
-						</div>
-						<button
-							onClick={() => confirmDelivery(order)}
-							disabled={confirming === order.id}
-							className="mt-4 w-full py-3 rounded-full bg-green-700 text-white text-sm hover:bg-green-800 transition-colors disabled:opacity-40 flex items-center justify-center gap-1.5"
-						>
-							{confirming === order.id ? (
-								'Confirming…'
-							) : (
-								<>
-									Confirm Delivery <Check size={16} strokeWidth={2.5} />
-								</>
-							)}
-						</button>
-					</div>
-				))}
-			</div>
+											{confirming === order.id ? (
+												'Confirming…'
+											) : (
+												<>
+													Confirm <Check size={14} strokeWidth={2.5} />
+												</>
+											)}
+										</button>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			)}
 		</div>
 	);
 }
