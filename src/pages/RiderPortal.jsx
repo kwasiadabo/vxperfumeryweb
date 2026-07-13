@@ -49,7 +49,6 @@ export default function RiderPortal() {
 		setLoading(true);
 		try {
 			const { data } = await riderApi.post('/rider/login', form);
-			console.log;
 			storeLogin(data.token, data.rider, data.mustSetPassword);
 			setForm({ phone: '', credential: '' });
 			if (!data.mustSetPassword) {
