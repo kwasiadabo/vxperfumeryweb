@@ -86,7 +86,7 @@ export default function AdminDelivery() {
         Only dispatched orders can be confirmed as delivered.
       </p>
       {runs.length ? (
-        <div className="mt-4 grid md:grid-cols-2 gap-4">
+        <div className="mt-4 space-y-4">
           {runs.map((run) => (
             <div key={run.rider.id} className="bg-white border border-black/5 rounded-lg p-5">
               <div className="flex items-center justify-between gap-3">
@@ -104,14 +104,30 @@ export default function AdminDelivery() {
                     : `Dispatch ${run.orders.length} ${run.orders.length === 1 ? 'order' : 'orders'}`}
                 </button>
               </div>
-              <ul className="mt-4 space-y-2">
-                {run.orders.map((order, i) => (
-                  <li key={order.id} className="text-xs border-t border-black/5 pt-2">
-                    <span className="font-mono">{i + 1}. {order.orderNumber}</span>
-                    <span className="text-gold ml-2 inline-flex items-center gap-1"><MapPin size={11} strokeWidth={2} className="shrink-0" /> {order.shippingAddress}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-left text-black/40 border-t border-black/5">
+                      <th className="py-2 pr-3 font-medium">#</th>
+                      <th className="py-2 pr-3 font-medium">Order</th>
+                      <th className="py-2 font-medium">Address</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {run.orders.map((order, i) => (
+                      <tr key={order.id} className="border-t border-black/5">
+                        <td className="py-2 pr-3 text-black/40">{i + 1}</td>
+                        <td className="py-2 pr-3 font-mono">{order.orderNumber}</td>
+                        <td className="py-2 text-gold">
+                          <span className="inline-flex items-center gap-1">
+                            <MapPin size={11} strokeWidth={2} className="shrink-0" /> {order.shippingAddress}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ))}
         </div>
@@ -125,23 +141,38 @@ export default function AdminDelivery() {
         Dispatched orders — each disappears when its rider confirms delivery in the Rider Portal.
       </p>
       {outForDelivery.length ? (
-        <div className="mt-4 grid md:grid-cols-2 gap-4">
+        <div className="mt-4 space-y-4">
           {outForDelivery.map((run) => (
             <div key={run.rider.id} className="bg-white border border-black/5 rounded-lg p-5">
               <p className="font-medium flex items-center gap-1.5"><Bike size={15} strokeWidth={2} className="shrink-0" /> {run.rider.name}</p>
-              <ul className="mt-3 space-y-2">
-                {run.orders.map((order) => (
-                  <li key={order.id} className="text-xs border-t border-black/5 pt-2 flex items-start justify-between gap-2">
-                    <div>
-                      <span className="font-mono">{order.orderNumber}</span>
-                      <span className="text-gold ml-2 inline-flex items-center gap-1"><MapPin size={11} strokeWidth={2} className="shrink-0" /> {order.shippingAddress}</span>
-                    </div>
-                    <span className={`shrink-0 px-2 py-0.5 rounded-full capitalize ${badge[order.status]}`}>
-                      {order.status}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-3 overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-left text-black/40 border-t border-black/5">
+                      <th className="py-2 pr-3 font-medium">Order</th>
+                      <th className="py-2 pr-3 font-medium">Address</th>
+                      <th className="py-2 font-medium text-right">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {run.orders.map((order) => (
+                      <tr key={order.id} className="border-t border-black/5">
+                        <td className="py-2 pr-3 font-mono">{order.orderNumber}</td>
+                        <td className="py-2 pr-3 text-gold">
+                          <span className="inline-flex items-center gap-1">
+                            <MapPin size={11} strokeWidth={2} className="shrink-0" /> {order.shippingAddress}
+                          </span>
+                        </td>
+                        <td className="py-2 text-right">
+                          <span className={`px-2 py-0.5 rounded-full capitalize ${badge[order.status]}`}>
+                            {order.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ))}
         </div>

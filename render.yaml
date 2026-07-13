@@ -1,0 +1,9 @@
+routes:
+  # SPA fallback — client-side routes (e.g. /rider, /checkout/complete,
+  # /track-order) must resolve to index.html so React Router can take over.
+  # Only takes effect if this service is Blueprint-managed; for an existing
+  # dashboard-created static site, add the same rule under
+  # Settings -> Redirects/Rewrites instead.
+  - type: rewrite
+    source: /*
+    destination: /index.html
