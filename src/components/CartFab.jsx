@@ -1,13 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
-import { useAuthStore } from '../store/authStore';
 
-// Floating "View Cart" button shown while shopping (signed-in users with items in cart)
+// Floating "View Cart" button shown while shopping (anyone with items in cart)
 export default function CartFab() {
   const count = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
-  const user = useAuthStore((s) => s.user);
 
-  if (!user || count === 0) return null;
+  if (count === 0) return null;
 
   return (
     <Link

@@ -1,26 +1,18 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
-import { useAuthStore } from '../store/authStore';
 import { useToastStore } from '../store/toastStore';
 import { money } from '../lib/format';
 import { resolveAssetUrl } from '../lib/api';
 
 export default function ProductCard({ product }) {
   const addItem = useCartStore((s) => s.addItem);
-  const user = useAuthStore((s) => s.user);
   const toast = useToastStore((s) => s.show);
-  const navigate = useNavigate();
   const [added, setAdded] = useState(false);
   const inStock = (product.Inventory?.quantityInStock ?? 0) > 0;
 
   const handleAdd = () => {
-    if (!user) {
-      toast('Sign in to add items to your cart');
-      navigate('/login');
-      return;
-    }
     addItem(product);
     toast(`${product.name} added to cart`);
     setAdded(true);

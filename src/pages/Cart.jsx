@@ -1,21 +1,11 @@
-import { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
-import { useAuthStore } from '../store/authStore';
 import { money } from '../lib/format';
 import { resolveAssetUrl } from '../lib/api';
 
 export default function Cart() {
   const { items, updateQuantity, removeItem } = useCartStore();
-  const user = useAuthStore((s) => s.user);
-  const navigate = useNavigate();
   const subtotal = items.reduce((sum, i) => sum + Number(i.product.price) * i.quantity, 0);
-
-  useEffect(() => {
-    if (!user) navigate('/login');
-  }, [user, navigate]);
-
-  if (!user) return null;
 
   if (!items.length) {
     return (

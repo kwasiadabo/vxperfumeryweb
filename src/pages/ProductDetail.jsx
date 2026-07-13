@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import api, { resolveAssetUrl } from '../lib/api';
 import { useCartStore } from '../store/cartStore';
@@ -10,7 +10,6 @@ import CartFab from '../components/CartFab';
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [favorited, setFavorited] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
@@ -75,11 +74,6 @@ export default function ProductDetail() {
         <div className="mt-8 flex gap-3">
           <button
             onClick={() => {
-              if (!user) {
-                toast('Sign in to add items to your cart');
-                navigate('/login');
-                return;
-              }
               addItem(product);
               toast(`${product.name} added to cart`);
             }}

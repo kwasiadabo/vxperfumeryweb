@@ -39,9 +39,9 @@ export default function Navbar() {
         <nav className="hidden lg:flex items-center gap-6">
           <NavLink to="/products" className={navLinkClass}>Shop</NavLink>
           <NavLink to="/favorites" className={navLinkClass}>Favourites</NavLink>
-          {user && (
+          {count > 0 && (
             <NavLink to="/cart" className={navLinkClass}>
-              Cart{count > 0 && <span className="ml-1 text-gold">({count})</span>}
+              Cart <span className="ml-1 text-gold">({count})</span>
             </NavLink>
           )}
           {user && (
@@ -97,9 +97,9 @@ export default function Navbar() {
         >
           <NavLink to="/products" onClick={closeMenu} className={mobileNavLinkClass}>Shop</NavLink>
           <NavLink to="/favorites" onClick={closeMenu} className={mobileNavLinkClass}>Favourites</NavLink>
-          {user && (
+          {count > 0 && (
             <NavLink to="/cart" onClick={closeMenu} className={mobileNavLinkClass}>
-              Cart{count > 0 && <span className="ml-1 text-gold">({count})</span>}
+              Cart <span className="ml-1 text-gold">({count})</span>
             </NavLink>
           )}
           {user && (

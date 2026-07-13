@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Phone, MessageCircle } from 'lucide-react';
-import { useAuthStore } from '../store/authStore';
+import { useCartStore } from '../store/cartStore';
 
 export default function Footer() {
-  const user = useAuthStore((s) => s.user);
+  const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
   return (
     <footer className="bg-ink-deep text-white/70 mt-auto border-t border-gold/40">
       {/* Full footer — sm and up */}
@@ -44,7 +44,7 @@ export default function Footer() {
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link to="/products" className="hover:text-gold transition-colors">Shop the Collection</Link></li>
             <li><Link to="/favorites" className="hover:text-gold transition-colors">Favourites</Link></li>
-            {user && <li><Link to="/cart" className="hover:text-gold transition-colors">Cart</Link></li>}
+            {cartCount > 0 && <li><Link to="/cart" className="hover:text-gold transition-colors">Cart</Link></li>}
             <li><Link to="/account" className="hover:text-gold transition-colors">My Account</Link></li>
             <li><Link to="/track-order" className="hover:text-gold transition-colors">Track Order</Link></li>
             <li><Link to="/rider" className="hover:text-gold transition-colors">Rider Portal</Link></li>
